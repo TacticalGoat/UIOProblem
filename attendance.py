@@ -43,12 +43,10 @@ def present_on_day(day):
 
 #Gets all absent for a particular day
 def absent_on_day(day):
-    count = 0
     absent_ids = []
     for i in range(12):
         for shift in range(8):
             if ((day[i] >> shift) & 1) == 0:
-                count += 1
                 absent_ids.append((8 * i) + (8 - shift - 1))
 
     final = day[-1]
