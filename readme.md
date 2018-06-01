@@ -1,8 +1,8 @@
-#Problem 1
+# Problem 1
 Solved as per my understanding of the given statement.
 
-##Install dependencies
+## Install dependencies
 > pip3 install -r requirements.txt
 
-##Run
+## Run
 > python3 attendance.py
