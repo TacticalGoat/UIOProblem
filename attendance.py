@@ -36,7 +36,7 @@ def present_on_day(day):
 
     final = day[-1]
     final = final >> 4
-    for shift in range(5):
+    for shift in range(4):
         if((final >> shift) & 1) == 1:
             present_ids.append(96 + shift)
     return len(present_ids) , sorted(present_ids)
@@ -51,7 +51,7 @@ def absent_on_day(day):
 
     final = day[-1]
     final = final >> 4
-    for shift in range(5):
+    for shift in range(4):
         if((final >> shift) & 1) == 0:
             absent_ids.append(96 + shift)
 
@@ -68,7 +68,7 @@ def present_both_days(day1, day2):
 
     common = day1[-1] & day2[-1]
     common = common >> 4
-    for shift in range(5):
+    for shift in range(4):
         if((common >> shift) & 1 == 1):
             present_ids.append(96 + shift)
 
@@ -85,7 +85,7 @@ def absent_both_days(day1, day2):
 
     common = day1[-1] | day2[-1]
     common = common >> 4
-    for shift in range(5):
+    for shift in range(4):
         if((common >> shift) & 1 == 0):
             absent_ids.append(96 + shift)
 
