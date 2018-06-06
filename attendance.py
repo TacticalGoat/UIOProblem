@@ -30,16 +30,22 @@ def populate_with_random_data(r, keys):
 def find_present(r, day):
     day = bytearray(r.get(day))
     present_ids = []
+
+    #Use the first 96 bits i,e 12 bytes as the last one is not fully initialized
     for i in range(12):
+        #Check each bit if it is set
         for shift in range(8):
             if ((day[i] >> shift) & 1) == 1:
+                #Wierd numbers because each byte is set from the right side
                 present_ids.append((8 * i) + (8 - shift - 1))
 
+    #find info in last 4 bits
     final = day[-1]
     final = final >> 4
     for shift in range(4):
         if((final >> shift) & 1) == 1:
             present_ids.append(96 + shift)
+    #sorted for ease of reading
     return sorted(present_ids)
 
 #Find absent id's for a givent day
