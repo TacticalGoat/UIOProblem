@@ -31,7 +31,6 @@ def find_presents(r, day):
     day = bytearray(r.get(day))
     present_ids = []
 
-    #Use the first 96 bits i,e 12 bytes as the last one is not fully initialized
     for i in range(13):
         #Check each bit if it is set
         for shift in range(8):
