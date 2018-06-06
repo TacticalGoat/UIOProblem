@@ -36,13 +36,14 @@ def find_presents(r, day):
         #Check each bit if it is set
         for shift in range(8):
             if ((day[i] >> shift) & 1) == 1:
-                #Wierd numbers because each byte is set from the right side
+                #Wierd numbers because each byte is set from the right side and 
+                #left shift is unreliable due to type coercion
                 present_ids.append((8 * i) + (7 - shift))
 
     #sorted for ease of reading
     return sorted(present_ids)
 
-#Find absent id's for a givent day
+#Find absent ids for a given day
 def find_absents(r, day):
     present = set(find_presents(r, day))
     absent = set(range(100)) - present
