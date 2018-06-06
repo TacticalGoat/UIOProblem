@@ -26,8 +26,9 @@ def populate_with_random_data(r, keys):
             if random.choice([True, False]):
                 set_present(r, key, i)
 
-#Gets all present for a particular day
-def present_on_day(day):
+#Find present ids for a given day
+def find_present(r, day):
+    day = bytearray(r.get(day))
     present_ids = []
     for i in range(12):
         for shift in range(8):
@@ -39,59 +40,26 @@ def present_on_day(day):
     for shift in range(4):
         if((final >> shift) & 1) == 1:
             present_ids.append(96 + shift)
-    return len(present_ids) , sorted(present_ids)
+    return sorted(present_ids)
 
-#Gets all absent for a particular day
-def absent_on_day(day):
-    absent_ids = []
-    for i in range(12):
-        for shift in range(8):
-            if ((day[i] >> shift) & 1) == 0:
-                absent_ids.append((8 * i) + (8 - shift - 1))
+#Find absent id's for a givent day
+def find_absents(r, day):
+    present = set(find_present(r, day))
+    absent = set(range(100)) - present
+    return list(absent)
 
-    final = day[-1]
-    final = final >> 4
-    for shift in range(4):
-        if((final >> shift) & 1) == 0:
-            absent_ids.append(96 + shift)
+#Find present on both days
+def find_present_both_days(r, day1, day2):
+    present_1 = set(find_present(r, day1))
+    present_2 = set(find_present(r, day2))
+    return list(present_1 & present_2)
 
-    return len(absent_ids) , sorted(absent_ids)
+#Find absent on both days
+def find_absent_both_days(r, day1, day2):
+    absent_1 = set(find_absents(r, day1))
+    absent_2 = set(find_absents(r, day2))
+    return list(absent_1 & absent_2)
 
-#Gets all present for any two given days
-def present_both_days(day1, day2):
-    present_ids = []
-    for i in range(12):
-        common = day1[i] & day2[i]
-        for shift in range(8):
-            if ((common >> shift) & 1)== 1:
-                present_ids.append((8 * i) +(8 - shift - 1))
-
-    common = day1[-1] & day2[-1]
-    common = common >> 4
-    for shift in range(4):
-        if((common >> shift) & 1 == 1):
-            present_ids.append(96 + shift)
-
-    return len(present_ids), present_ids
-
-#Gets all absent for any two given days
-def absent_both_days(day1, day2):
-    absent_ids = []
-    for i in range(12):
-        common = day1[i] | day2[i]
-        for shift in range(8):
-            if ((common >> shift) & 1) == 0:
-                absent_ids.append((8 * i) +(8 - shift - 1))
-
-    common = day1[-1] | day2[-1]
-    common = common >> 4
-    for shift in range(4):
-        if((common >> shift) & 1 == 0):
-            absent_ids.append(96 + shift)
-
-    return len(absent_ids), absent_ids
-
-#Problem solution generates random values and prints attendance for each day and consecitive days.
 def problem(r, no_of_days):
     keys = [generate_key(i + 1) for i in range(no_of_days)]
     print("Initializing database.....")
@@ -101,17 +69,16 @@ def problem(r, no_of_days):
 
     #This is done to limit the number of calls to the database else calls have to made in each function
     #All the functions are just passed the byte arrays
-    days = [bytearray(r.get(key)) for key in keys]
     print("==============PER DAY===============")
-    for index , key in enumerate(keys):
-        print("Present on " + key)
-        count, ids = present_on_day(days[index])
-        print("Count:" + str(count))
+    for key in keys:
+        print("Present on " + str(key))
+        ids = find_present(r, key)
+        print("Count:" + str(get_present_for_day_so_far(r, key)))
         print("Ids:" + str(ids))
         print("##################")
         print("Absent on " + key)
-        count, ids = absent_on_day(days[index])
-        print("Count:" + str(count))
+        ids = find_absents(r, key)
+        print("Count:" + str(100 - get_present_for_day_so_far(r, key)))
         print("Ids:" + str(ids))
         print("##################")
     
@@ -120,13 +87,13 @@ def problem(r, no_of_days):
     j = 1
     while(j < no_of_days):
         print("Present on both " + keys[i] + " and " + keys[j])
-        count, ids = present_both_days(days[i], days[j])
-        print("Count:" + str(count))
+        ids = find_present_both_days(r, keys[i], keys[j])
+        print("Count:" + str(len(ids)))
         print("Ids:" + str(ids))
         print("##################")
         print("Absent on both " + keys[i] + " and " + keys[j])
-        count, ids = absent_both_days(days[i], days[j])
-        print("Count:" + str(count))
+        ids = find_absent_both_days(r, keys[i], keys[j])
+        print("Count:" + str(len(ids)))
         print("Ids:" + str(ids))
         print("##################")
         i += 1
