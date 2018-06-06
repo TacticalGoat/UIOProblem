@@ -32,7 +32,7 @@ def find_present(r, day):
     present_ids = []
 
     #Use the first 96 bits i,e 12 bytes as the last one is not fully initialized
-    for i in range(12):
+    for i in range(13):
         #Check each bit if it is set
         for shift in range(8):
             if ((day[i] >> shift) & 1) == 1:
@@ -44,7 +44,7 @@ def find_present(r, day):
     final = final >> 4
     for shift in range(4):
         if((final >> shift) & 1) == 1:
-            present_ids.append(96 + shift)
+            present_ids.append(96 + 3 - shift)
     #sorted for ease of reading
     return sorted(present_ids)
 
@@ -72,8 +72,6 @@ def problem(r, no_of_days):
     initialze_database(r, keys)
     print("Populating Random Values.........")
     populate_with_random_data(r, keys)
-
-    #This is done to limit the number of calls to the database else calls have to made in each function
     #All the functions are just passed the byte arrays
     print("==============PER DAY===============")
     for key in keys:
