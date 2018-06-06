@@ -67,7 +67,6 @@ def problem(r, no_of_days):
     initialze_database(r, keys)
     print("Populating Random Values.........")
     populate_with_random_data(r, keys)
-    #All the functions are just passed the byte arrays
     print("==============PER DAY===============")
     for key in keys:
         print("Present on " + str(key))
@@ -101,4 +100,4 @@ def problem(r, no_of_days):
 
 if __name__ == '__main__':
     r = redis.Redis(host='localhost', port=6379)
-    problem(r, 5)
+    problem(r, 10000)
