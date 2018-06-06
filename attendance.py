@@ -27,7 +27,7 @@ def populate_with_random_data(r, keys):
                 set_present(r, key, i)
 
 #Find present ids for a given day
-def find_present(r, day):
+def find_presents(r, day):
     day = bytearray(r.get(day))
     present_ids = []
 
@@ -37,27 +37,21 @@ def find_present(r, day):
         for shift in range(8):
             if ((day[i] >> shift) & 1) == 1:
                 #Wierd numbers because each byte is set from the right side
-                present_ids.append((8 * i) + (8 - shift - 1))
+                present_ids.append((8 * i) + (7 - shift))
 
-    #find info in last 4 bits
-    final = day[-1]
-    final = final >> 4
-    for shift in range(4):
-        if((final >> shift) & 1) == 1:
-            present_ids.append(96 + 3 - shift)
     #sorted for ease of reading
     return sorted(present_ids)
 
 #Find absent id's for a givent day
 def find_absents(r, day):
-    present = set(find_present(r, day))
+    present = set(find_presents(r, day))
     absent = set(range(100)) - present
     return list(absent)
 
 #Find present on both days
-def find_present_both_days(r, day1, day2):
-    present_1 = set(find_present(r, day1))
-    present_2 = set(find_present(r, day2))
+def find_presents_both_days(r, day1, day2):
+    present_1 = set(find_presents(r, day1))
+    present_2 = set(find_presents(r, day2))
     return list(present_1 & present_2)
 
 #Find absent on both days
@@ -76,7 +70,7 @@ def problem(r, no_of_days):
     print("==============PER DAY===============")
     for key in keys:
         print("Present on " + str(key))
-        ids = find_present(r, key)
+        ids = find_presents(r, key)
         print("Count:" + str(get_present_for_day_so_far(r, key)))
         print("Ids:" + str(ids))
         print("##################")
@@ -91,7 +85,7 @@ def problem(r, no_of_days):
     j = 1
     while(j < no_of_days):
         print("Present on both " + keys[i] + " and " + keys[j])
-        ids = find_present_both_days(r, keys[i], keys[j])
+        ids = find_presents_both_days(r, keys[i], keys[j])
         print("Count:" + str(len(ids)))
         print("Ids:" + str(ids))
         print("##################")
